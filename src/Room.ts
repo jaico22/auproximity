@@ -85,6 +85,9 @@ export default class Room {
             const client = this.members.find(c => c.name === payload.name);
             if (client) {
                 client.isImposter = payload.isImposter;
+                this.members.forEach(c => {
+                    c.setIsImposterOf(client.uuid, payload.isImposter);
+                })
             }
         })
         this.backendAdapter.on(BackendEvent.AllPlayerJoinGroups, (payload: { group: RoomGroup }) => {
