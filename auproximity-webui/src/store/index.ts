@@ -25,7 +25,8 @@ const state: State = {
       x: 0,
       y: 0
     },
-    group: RoomGroup.Spectator
+    group: RoomGroup.Spectator,
+    isImposter: false
   },
   clients: [],
   options: {
@@ -63,10 +64,19 @@ export default new Vuex.Store({
     setGroup (state: State, payload: RoomGroup) {
       state.me.group = payload
     },
+    setIsImposter (state: State, payload: boolean) {
+      state.me.isImposter = payload
+    },
     setGroupOf (state: State, payload: { uuid: string; group: RoomGroup }) {
       const index = state.clients.findIndex(c => c.uuid === payload.uuid)
       if (index !== -1) {
         state.clients[index].group = payload.group
+      }
+    },
+    setIsImposterOf (state: State, payload: {uuid: string; isImposter: boolean}) {
+      const index = state.clients.findIndex(c => c.uuid === payload.uuid)
+      if (index !== -1) {
+        state.clients[index].isImposter = payload.isImposter
       }
     },
     setJoinedRoom (state: State, payload: boolean) {
@@ -104,21 +114,23 @@ export default new Vuex.Store({
     [`socket_${ClientSocketEvents.SetUuid}`] ({ commit }, uuid: string) {
       commit('setUuid', uuid)
     },
-    [`socket_${ClientSocketEvents.AddClient}`] ({ commit }, payload: { uuid: string; name: string; pose: Pose; group: RoomGroup }) {
+    [`socket_${ClientSocketEvents.AddClient}`] ({ commit }, payload: { uuid: string; name: string; pose: Pose; group: RoomGroup; isImposter: boolean }) {
       const client: ClientModel = {
         uuid: payload.uuid,
         name: payload.name,
         pose: payload.pose,
-        group: payload.group
+        group: payload.group,
+        isImposter: payload.isImposter
       }
       commit('addClient', client)
     },
-    [`socket_${ClientSocketEvents.SetAllClients}`] ({ commit }, payload: { uuid: string; name: string; pose: Pose; group: RoomGroup }[]) {
+    [`socket_${ClientSocketEvents.SetAllClients}`] ({ commit }, payload: { uuid: string; name: string; pose: Pose; group: RoomGroup; isImposter: boolean }[]) {
       const clients: ClientModel[] = payload.map(c => ({
         uuid: c.uuid,
         name: c.name,
         pose: c.pose,
-        group: c.group
+        group: c.group,
+        isImposter: c.isImposter
       }))
       commit('setAllClients', clients)
     },
@@ -141,6 +153,13 @@ export default new Vuex.Store({
     },
     [`socket_${ClientSocketEvents.SetHost}`] ({ commit }, payload: { ishost: boolean }) {
       commit('setHost', { ishost: payload.ishost })
+    },
+    [`socket_${ClientSocketEvents.SetIsImposter}`] ({ commit, state }, payload: {uuid: string; isImposter: boolean}) {
+      if (payload.uuid === state.me.uuid) {
+        commit('setIsImposter', payload.isImposter)
+      } else {
+        commit('setIsImposterOf', { uuid: payload.uuid, isImposter: payload.isImposter })
+      }
     }
   },
   modules: {

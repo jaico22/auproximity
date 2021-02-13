@@ -317,8 +317,13 @@ export default class ServerDisplayer extends Vue {
         stream.pannerNode.setPosition(p2.x - p1.x, p2.y - p1.y, 1)
       }
     } else if (client.group === RoomGroup.Spectator || client.group === RoomGroup.Muted) {
-      // If they are spectator or muted
-      stream.gainNode.gain.value = 0
+      const isImposter = this.$store.state.me.isImposter
+      if (!isImposter) {
+        // If they are spectator or muted
+        stream.gainNode.gain.value = 0
+      } else {
+        stream.gainNode.gain.value = 1
+      }
     }
   }
 

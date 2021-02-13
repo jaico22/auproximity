@@ -69,7 +69,6 @@ export default class Room {
             });
         });
         this.backendAdapter.on(BackendEvent.PlayerJoinGroup, (payload: { name: string; group: RoomGroup }) => {
-
             // store the state of this client <-> roomGroup in the room
             // this is to restore the room group if the client disconnects and reconnects
             this.clientRoomGroupMap.set(payload.name, payload.group);
@@ -81,6 +80,12 @@ export default class Room {
                 });
             }
         });
+        this.backendAdapter.on(BackendEvent.PlayerSetImposter, (payload: {name: string; isImposter: boolean}) => {
+            const client = this.members.find(c => c.name === payload.name);
+            if (client) {
+                client.isImposter = payload.isImposter;
+            }
+        })
         this.backendAdapter.on(BackendEvent.AllPlayerJoinGroups, (payload: { group: RoomGroup }) => {
             this.members.forEach(client => {
                 // store the state of this client <-> roomGroup in the room
@@ -127,12 +132,13 @@ export default class Room {
         }
         client.setMap(this.map);
 
-        this.members.forEach(c => c.addClient(client.uuid, client.name, client.pose, client.group));
+        this.members.forEach(c => c.addClient(client.uuid, client.name, client.pose, client.group, client.isImposter));
         client.setAllClients(this.members.map(c => ({
             uuid: c.uuid,
             name: c.name,
             pose: c.pose,
-            group: c.group
+            group: c.group,
+            isImposter: c.isImposter
         })));
         this.members.push(client);
 

@@ -95,6 +95,11 @@ export abstract class BackendAdapter extends EventEmitter {
     emitSettingsUpdate(settings: GameSettings) {
         this.emit(BackendEvent.SettingsUpdate, { settings });
     }
+    emitPlayerSetImposter(name: string, isImposter: boolean){
+        console.log("Setting imposter status")
+        console.log(`name=${name} isImposter=${isImposter}`)
+        this.emit(BackendEvent.PlayerSetImposter, { name, isImposter});
+    }
 }
 
 export enum BackendEvent {
@@ -106,6 +111,7 @@ export enum BackendEvent {
     PlayerFromJoinGroup = "playerfromjoingroup",
     Error = "error",
     HostChange = "hostchange",
-    SettingsUpdate = "settingsupdate"
+    SettingsUpdate = "settingsupdate",
+    PlayerSetImposter = "playersetimposter"
 }
 

@@ -28,6 +28,7 @@ export default class Client implements IClientBase {
     public name: string;
     public group: RoomGroup;
     public pose: Pose;
+    public isImposter: boolean;
 
     constructor(socket: Socket, uuid: string) {
         this.socket = socket;
@@ -102,16 +103,18 @@ export default class Client implements IClientBase {
         uuid: string;
         name: string;
         pose: Pose;
-        group: RoomGroup
+        group: RoomGroup; 
+        isImposter: boolean;
     }[]): void {
         this.socket.emit(ClientSocketEvents.SetAllClients, array);
     }
-    addClient(uuid: string, name: string, pose: Pose, group: RoomGroup): void {
+    addClient(uuid: string, name: string, pose: Pose, group: RoomGroup, isImposter: boolean): void {
         this.socket.emit(ClientSocketEvents.AddClient, {
             uuid,
             name,
             pose,
-            group
+            group,
+            isImposter
         });
     }
     removeClient(uuid: string): void {
@@ -140,5 +143,11 @@ export default class Client implements IClientBase {
     }
     sendSettings(settings: GameSettings) {
         this.socket.emit(ClientSocketEvents.SetSettings, { settings });
+    }
+    setIsImposterOf(uuid: string, isImposter: boolean): void {
+        if (uuid === this.uuid) {
+            this.isImposter = isImposter;
+        }
+        this.socket.emit(ClientSocketEvents.SetIsImposter, { uuid, isImposter });    
     }
 }

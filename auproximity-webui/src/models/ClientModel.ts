@@ -5,6 +5,7 @@ export default interface ClientModel {
   name: string;
   pose: Pose;
   group: RoomGroup;
+  isImposter: boolean;
 }
 
 export interface Pose {

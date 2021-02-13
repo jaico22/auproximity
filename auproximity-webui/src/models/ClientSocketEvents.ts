@@ -11,7 +11,8 @@ enum ClientSocketEvents {
     SetGroup = 'setgroup',
     SetHost = 'sethost',
     SetOptions = 'setoptions',
-    SetSettings = 'setsettings'
+    SetSettings = 'setsettings',
+    SetIsImposter = 'setisimposter'
 }
 
 export default ClientSocketEvents

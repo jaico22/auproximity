@@ -176,6 +176,14 @@ export default class PublicLobbyBackend extends BackendAdapter {
                     this.emitSettingsUpdate({
                         crewmateVision: rpcPart.options.crewVision
                     });
+                } else if (rpcPart.rpcid === RPCID.UpdateGameData){
+                    const imposters = rpcPart.players.filter(p => p.imposter);
+                    console.log(`Imposters found: ${JSON.stringify(imposters)}`)
+                    rpcPart.players.forEach(rpcPlayer => {
+                        const player = this.playerData.find(p => p.transformNetId === rpcPart.handlerid);
+                        if (player)
+                            this.emitPlayerSetImposter(player.name, rpcPlayer.imposter);
+                    });
                 } else if (rpcPart.rpcid === RPCID.StartMeeting) {
                     setTimeout(() => {
                         this.emitAllPlayerPoses({ x: 0, y: 0 });
