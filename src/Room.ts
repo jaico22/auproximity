@@ -27,7 +27,7 @@ export default class Room {
         falloff: 2.7,
         falloffVision: false,
         colliders: true,
-        paSystems: true,
+        paSystems: false,
         haunting: true
     };
 
