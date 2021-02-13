@@ -42,6 +42,13 @@
         :disabled="!$store.state.joinedRoom"
         @change="updateOptions"
       ></v-checkbox>
+      <v-checkbox
+        label="Haunting"
+        v-model="$store.state.options.haunting"
+        :readonly="!$store.state.ishost"
+        :disabled="!$store.state.joinedRoom"
+        @change="updateOptions"
+      ></v-checkbox>
     </v-form>
   </v-card>
 </template>

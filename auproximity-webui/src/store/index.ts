@@ -33,7 +33,8 @@ const state: State = {
     falloff: 4,
     falloffVision: false,
     colliders: true,
-    paSystems: true
+    paSystems: true,
+    haunting: true,
   },
   ishost: false
 }
