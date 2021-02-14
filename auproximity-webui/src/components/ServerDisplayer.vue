@@ -318,6 +318,7 @@ export default class ServerDisplayer extends Vue {
       }
     } else if (client.group === RoomGroup.Spectator || client.group === RoomGroup.Muted) {
       const isImposter = this.$store.state.me.isImposter
+      console.log(`Player: ${this.$store.state.me.name}. IsImposter: ${isImposter}`)
       console.log(`Haunting Status: ${this.$store.state.options.haunting}`)
       if (!isImposter || !this.$store.state.options.haunting) {
         stream.gainNode.gain.value = 0
